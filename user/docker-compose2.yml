@@ -1,0 +1,35 @@
+version: '3.6'
+
+services:
+  spring-app:
+    image: user-energy  # Replace with the actual Spring Boot application image
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/yourdb  # Update with your DB name
+      SPRING_DATASOURCE_USERNAME: yourdbuser
+      SPRING_DATASOURCE_PASSWORD: yourdbpassword
+    depends_on:
+      - postgres
+    networks:
+      - mynetwork
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: yourdb  # Update with your DB name
+      POSTGRES_USER: yourdbuser
+      POSTGRES_PASSWORD: yourdbpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    external: true
+
+volumes:
+  postgres_data:
