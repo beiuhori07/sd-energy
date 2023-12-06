@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceRepository deviceRepository;
+    private final KafkaProducerService kafkaProducerService;
+
     @Override
     public DeviceDto createDevice(DeviceDto deviceToCreate) {
         Device device = DeviceMapper.toDevice(deviceToCreate);
@@ -87,5 +89,8 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public void deleteDevice(UUID id) {
         deviceRepository.deleteById(id);
+
+        // send kafka event to delete all hourly data entries
+        kafkaProducerService.sendMessage(String.valueOf(id));
     }
 }

@@ -28,6 +28,19 @@ services:
       - postgres2
     networks:
       - mynetwork
+  monitoring-app:
+    image: monitoring-energy
+    container_name: monitoring-app
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres3:5432/yourdb
+      SPRING_DATASOURCE_USERNAME: yourdbuser
+      SPRING_DATASOURCE_PASSWORD: yourdbpassword
+    depends_on:
+      - postgres3
+    networks:
+      - mynetwork
 
   postgres:
     image: postgres:latest
@@ -54,12 +67,83 @@ services:
       - postgres_data2:/var/lib/postgresql/data2
     networks:
       - mynetwork
+  postgres3:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: yourdb
+      POSTGRES_USER: yourdbuser
+      POSTGRES_PASSWORD: yourdbpassword
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data3:/var/lib/postgresql/data3
+    networks:
+      - mynetwork
   react:
     image: energy-fe
     ports:
-      - "80:80"
+      - "81:81"
     environment:
       - BACKEND=172.30.0.2
+    networks:
+      - mynetwork
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.0
+    container_name: zookeeper-energy
+    restart: on-failure
+      #    volumes:
+      #      - zookeeperdata:/var/lib/zookeeper/data
+      #      - zookeeperlog:/var/lib/zookeeper/log
+      #      - zookeeper:/var/log/zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: zookeeper:2888:3888
+    networks:
+      - mynetwork
+  kafka:
+    image: confluentinc/cp-kafka:7.0.0
+    container_name: kafka-energy
+    restart: on-failure
+      #      volumes:
+      #        - kafkadata:/var/lib/kafka/data
+      #        - kafka:/var/log/kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE_LOCAL_HOST://:9093
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE_LOCAL_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE_LOCAL_HOST:PLAINTEXT
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 30000000
+      KAFKA_PRODUCER_MAX_REQUEST_SIZE: 30000000
+      KAFKA_CONSUMER_MAX_PARTITION_FETCH_BYTES: 30000000
+      KAFKA_MESSAGE_MAX_BYTES: 30000000
+      KAFKA_LOG_RETENTION_MS: 3600000
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 60000
+    networks:
+      - mynetwork
+  init-kafka:
+    image: confluentinc/cp-kafka:7.0.0
+    container_name: init-kafka-energy
+    depends_on:
+      - kafka
+    command: [ "/bin/sh", "/create-topics.sh" ]
+    volumes:
+      - type: bind
+        source: ./create-topics.sh
+        target: /create-topics.sh
     networks:
       - mynetwork
 
@@ -72,3 +156,4 @@ networks:
 volumes:
   postgres_data:
   postgres_data2:
+  postgres_data3:

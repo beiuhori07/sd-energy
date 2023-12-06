@@ -36,11 +36,8 @@ public class SecurityConfig {
                 .cors().and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/auth/**")
-                                .permitAll()
-//                                .requestMatchers(GET, "/device").hasAnyRole(Role.USER.name())
-//                                .requestMatchers("/device/**").hasAnyRole(Role.ADMIN.name())
-//                                .requestMatchers(GET, "/device").hasAnyRole(Role.USER.name())
+                                req.requestMatchers(GET, "/device/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers("/device/**").hasAnyRole(Role.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )
