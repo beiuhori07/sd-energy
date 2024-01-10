@@ -1,6 +1,26 @@
 version: '3.6'
 
 services:
+  gateway-app:
+    image: gateway-energy
+    container_name: gateway-app
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/yourdb
+      SPRING_DATASOURCE_USERNAME: yourdbuser
+      SPRING_DATASOURCE_PASSWORD: yourdbpassword
+    depends_on:
+      - postgres
+    networks:
+      - mynetwork
+  chat-app:
+    image: chat-energy
+    container_name: chat-app
+    ports:
+      - "8084:8084"
+    networks:
+      - mynetwork
   user-app:
     image: user-energy
     container_name: user-app

@@ -19,7 +19,7 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry
-        .addEndpoint("/ws-test")
+        .addEndpoint("/monitoring/ws-test")
         .setAllowedOrigins(
             "http://localhost",
             "http://localhost:80",

@@ -27,44 +27,44 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-
-    private final JwtAuthenticationFilter jwtAuthFilter;
+//
+//    private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
+//
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
+////                .cors()
+////                .and()
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(AbstractHttpConfigurer::)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/auth/**")
-                                .permitAll()
-                                .requestMatchers(GET, "/user/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                                .requestMatchers("/user/**").hasAnyRole(Role.ADMIN.name())
-                                .anyRequest()
-                                .authenticated()
-                )
+////                .cors(AbstractHttpConfigurer::)
+//                .authorizeHttpRequests(req ->
+//                        req.requestMatchers("/auth/**")
+//                                .permitAll()
+//                                .requestMatchers(GET, "/user/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+//                                .requestMatchers("/user/**").hasAnyRole(Role.ADMIN.name())
+//                                .anyRequest()
+//                                .authenticated()
+//                )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
-
+                .authenticationProvider(authenticationProvider);
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//        ;
+//
         return http.build();
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH",
-                "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type"));
-        UrlBasedCorsConfigurationSource source = new
-                UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
+//
+////    @Bean
+////    public CorsConfigurationSource corsConfigurationSource() {
+////        CorsConfiguration configuration = new CorsConfiguration();
+////        configuration.setAllowedOrigins(Arrays.asList("*"));
+////        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH",
+////                "DELETE", "OPTIONS"));
+////        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type"));
+////        UrlBasedCorsConfigurationSource source = new
+////                UrlBasedCorsConfigurationSource();
+////        source.registerCorsConfiguration("/**", configuration);
+////        return source;
+////    }
+//
 }

@@ -1,6 +1,6 @@
 package com.sd.monitoring.service;
 
-import com.sd.monitoring.config.JwtService;
+//import com.sd.monitoring.config.JwtService;
 import com.sd.monitoring.dto.DeviceDto;
 import com.sd.monitoring.entity.DeviceMaxConsWrapper;
 import com.sd.monitoring.entity.HourlyData;
@@ -8,13 +8,11 @@ import com.sd.monitoring.entity.SensorReading;
 import com.sd.monitoring.kafka.KafkaMessage;
 import com.sd.monitoring.repository.HourlyDataRepository;
 import com.sd.monitoring.repository.SensorReadingRepository;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +20,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +35,7 @@ public class ReadSensorService {
   private final HourlyDataRepository hourlyDataRepository;
   private final WebSocketService webSocketService;
   private final RestTemplate restTemplate;
-private final JwtService jwtService;
+//private final JwtService jwtService;
   private static final Map<UUID, DeviceMaxConsWrapper> deviceMaxConsMapping = new HashMap<>();
 
   @Transactional
@@ -123,9 +118,9 @@ private final JwtService jwtService;
       // cached
       return deviceMaxConsMapping.get(deviceId);
     } else {
-      String bearerToken = jwtService.generateToken();
+//      String bearerToken = jwtService.generateToken();
       HttpHeaders headers = new HttpHeaders();
-      headers.set("Authorization", "Bearer " + bearerToken);
+//      headers.set("Authorization", "Bearer " + bearerToken);
 
       HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
 

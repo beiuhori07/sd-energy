@@ -1,0 +1,138 @@
+server:
+  port: 8085
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000
+database:
+  ip: ${DB_IP:localhost}
+  port: ${DB_PORT:5432}
+  user: ${DB_USER:mockuser}
+  password: ${DB_PASSWORD:mockPassword}
+  name: ${DB_DBNAME:sd_user}
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security:  DEBUG
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+  sql:
+    init:
+      platform: postgres
+  datasource:
+    url: jdbc:postgresql://${database.ip}:${database.port}/${database.name}
+    username: ${database.user}
+    password: ${database.password}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:81"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowCredentials: true
+      routes:
+        - id:  user-api
+          uri: http://user-app:8081/
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - LogFilter
+            - RewritePath=/api/user(?<segment>.*), /user${segment}
+            - DebugFilter
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+#                backoff:
+#                  first-backoff: 10ms
+#                  max-backoff: 50ms
+#                  factor: 2
+#                  based-on-previous-value: false
+        - id: device-api
+          uri: http://device-app:8082/
+          predicates:
+            - Path=/api/device/**
+          filters:
+            - LogFilter
+            - RewritePath=/api/device(?<segment>.*), /device/${segment}
+            - DebugFilter
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+#                backoff:
+#                first-backoff: 10ms
+#                max-backoff: 50ms
+#                factor: 2
+#                based-on-previous-value: false
+        - id: monitoring-api
+          uri: http://monitoring-app:8083/
+          predicates:
+            - Path=/api/monitoring/**
+          filters:
+            - LogFilter
+            - RewritePath=/api/monitoring/(?<segment>.*), /monitoring/${segment}
+            - DebugFilter
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+#                backoff:
+#                first-backoff: 10ms
+#                max-backoff: 50ms
+#                factor: 2
+#                based-on-previous-value: false
+        - id: chat-api
+          uri: http://chat-app:8084/
+          predicates:
+            - Path=/api/chat/**
+          filters:
+            - LogFilter
+            - RewritePath=/api/chat/(?<segment>.*), /chat/${segment}
+            - DebugFilter
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+#                backoff:
+#                first-backoff: 10ms
+#                max-backoff: 50ms
+#                factor: 2
+#                based-on-previous-value: false
+        - id: user-auth
+          uri: http://user-app:8081/
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - LogFilter
+            - RewritePath=(/api)?/auth/(?<segment>.*), /auth/${segment}
+            - DebugFilter
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY
+#                backoff:
+#                  first-backoff: 10ms
+#                  max-backoff: 50ms
+#                  factor: 2
+#                  based-on-previous-value: false
