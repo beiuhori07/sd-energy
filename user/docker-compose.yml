@@ -17,15 +17,15 @@ services:
   chat-app:
     image: chat-energy
     container_name: chat-app
-    ports:
-      - "8084:8084"
+    # ports:
+    #   - "8084:8084"
     networks:
       - mynetwork
   user-app:
     image: user-energy
     container_name: user-app
-    ports:
-      - "8081:8081"
+    # ports:
+    #   - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/yourdb
       SPRING_DATASOURCE_USERNAME: yourdbuser
@@ -38,8 +38,8 @@ services:
   device-app:
     image: device-energy
     container_name: device-app
-    ports:
-      - "8082:8082"
+    # ports:
+    #   - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres2:5432/yourdb
       SPRING_DATASOURCE_USERNAME: yourdbuser
@@ -51,8 +51,8 @@ services:
   monitoring-app:
     image: monitoring-energy
     container_name: monitoring-app
-    ports:
-      - "8083:8083"
+    # ports:
+    #   - "8083:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres3:5432/yourdb
       SPRING_DATASOURCE_USERNAME: yourdbuser

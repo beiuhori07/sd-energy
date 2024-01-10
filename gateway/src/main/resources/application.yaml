@@ -74,7 +74,7 @@ spring:
             - Path=/api/device/**
           filters:
             - LogFilter
-            - RewritePath=/api/device(?<segment>.*), /device/${segment}
+            - RewritePath=/api/device(?<segment>.*), /device${segment}
             - DebugFilter
             - name: Retry
               args:
