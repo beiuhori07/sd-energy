@@ -9,7 +9,7 @@ resources:
 - repo: self
 
 variables:
-  registryName: 'containerregistrybeiusanuhoria30241'
+  registryName: containerregistrybeiusanuhoria30241
   tag: '$(Build.BuildId)'
   userImage: 'user-energy'
   deviceImage: 'device-energy'
@@ -31,7 +31,7 @@ stages:
       displayName: 'Login to Docker Registry'
       inputs:
         command: login
-        containerRegistry: containerregistrybeiusanuhoria30241.azurecr.io
+        containerRegistry: containerregistrybeiusanuhoria30241
         # username: $(registryUsername)
         # password: $(registryPassword)
     - task: Docker@2
