@@ -11,7 +11,7 @@ COPY build.gradle settings.gradle /app/
 COPY src /app/src
 
 # Build the JAR file
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon -x test --parallel
 
 # Stage 2: Create the runtime image
 FROM openjdk:17-jdk-slim
