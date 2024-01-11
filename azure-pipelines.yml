@@ -9,7 +9,13 @@ resources:
 - repo: self
 
 variables:
+  registryName: 'containerregistrybeiusanuhoria30241'
   tag: '$(Build.BuildId)'
+  userImage: 'user-energy'
+  deviceImage: 'device-energy'
+  monitoringImage: 'monitoring-energy'
+  chatImage: 'chat-energy'
+  gatewayImage: 'gateway-energy'
 
 stages:
 - stage: Build
@@ -20,31 +26,51 @@ stages:
     pool:
       name: local
     steps:
+    
     - task: Docker@2
-      displayName: Build an image
+      displayName: 'Login to Docker Registry'
       inputs:
-        command: build
+        command: login
+        containerRegistry: $(registryName)
+        # username: $(registryUsername)
+        # password: $(registryPassword)
+    - task: Docker@2
+      displayName: Build and push an image
+      inputs:
+        command: buildAndPush
+        repository: $(registryName)/$(chatImage)
         dockerfile: '$(Build.SourcesDirectory)/chat/Dockerfile'
         tags: |
           $(tag)
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build and push an image
       inputs:
-        command: build
+        command: buildAndPush
+        repository: $(registryName)/$(userImage)
         dockerfile: '$(Build.SourcesDirectory)/user/Dockerfile'
         tags: |
           $(tag)
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build and push an image
       inputs:
-        command: build
+        command: buildAndPush
+        repository: $(registryName)/$(deviceImage)
         dockerfile: '$(Build.SourcesDirectory)/device/Dockerfile'
         tags: |
           $(tag)
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build and push an image
       inputs:
-        command: build
+        command: buildAndPush
+        repository: $(registryName)/$(monitoringImage)
         dockerfile: '$(Build.SourcesDirectory)/monitoring/Dockerfile'
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Build and push an image
+      inputs:
+        command: buildAndPush
+        repository: $(registryName)/$(gatewayImage)
+        dockerfile: '$(Build.SourcesDirectory)/gateway/Dockerfile'
         tags: |
           $(tag)
