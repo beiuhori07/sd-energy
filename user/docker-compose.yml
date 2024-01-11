@@ -63,7 +63,7 @@ services:
       - mynetwork
 
   postgres:
-    image: postgres:latest
+    image: postgres:15
     environment:
       POSTGRES_DB: yourdb
       POSTGRES_USER: yourdbuser
@@ -76,7 +76,7 @@ services:
       - mynetwork
 
   postgres2:
-    image: postgres:latest
+    image: postgres:15
     environment:
       POSTGRES_DB: yourdb
       POSTGRES_USER: yourdbuser
@@ -88,7 +88,7 @@ services:
     networks:
       - mynetwork
   postgres3:
-    image: postgres:latest
+    image: postgres:15
     environment:
       POSTGRES_DB: yourdb
       POSTGRES_USER: yourdbuser
