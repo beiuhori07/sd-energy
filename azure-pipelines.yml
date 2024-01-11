@@ -27,3 +27,24 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/chat/Dockerfile'
         tags: |
           $(tag)
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/user/Dockerfile'
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/device/Dockerfile'
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/monitoring/Dockerfile'
+        tags: |
+          $(tag)
