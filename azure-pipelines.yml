@@ -31,7 +31,7 @@ stages:
       displayName: 'Login to Docker Registry'
       inputs:
         command: login
-        containerRegistry: containerregistrybeiusanuhoria30241
+        containerRegistry: containerregistrybeiusanuhoria30241.azurecr.io
         # username: $(registryUsername)
         # password: $(registryPassword)
     - task: Docker@2
